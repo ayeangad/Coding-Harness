@@ -1,4 +1,4 @@
-# pi
+# Coding Harness
 
 To install dependencies:
 
