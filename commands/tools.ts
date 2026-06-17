@@ -26,11 +26,15 @@ export async function getWeather(location: string) {
 }
 
 
-export async function writeFile(fileName: string, content: string) {
+export async function writeFile(fileName: string, content: string, mode: string) {
 
   const file = Bun.file(fileName)
   if (await file.exists()) {
-    await appendFile(fileName, content)
+    if (mode === "append") {
+      await appendFile(fileName, content)
+    } else if (mode === "overwrite") {
+      await Bun.write(fileName, content)
+    }
   } else {
     Bun.write(file, content)
   }
@@ -49,7 +53,6 @@ export async function deleteFile(fileName: string, content: string) {
 
   const file = Bun.file(fileName)
   const text = await file.text()
-  console.log("Deleting content:", JSON.stringify(content))
   if (content === "") {
     await file.delete()
   } else {
@@ -98,6 +101,11 @@ export const tools: Tool[] = [
         content: {
           type: "string",
           description: "The content that needs to be written or edited in the file"
+        },
+        mode: {
+          type: "string",
+          enum: ["append", "overwrite"],
+          description: "If the user wants to edit the file then overwrite it, and if the user wants to add contents then apped it to the file."
         },
       },
       required: ["file", "content"]

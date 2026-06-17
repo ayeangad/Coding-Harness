@@ -34,8 +34,8 @@ export async function agentLoop(prompt: string) {
         }
 
         if (item.name === "writeFile") {
-          const { file, content } = JSON.parse(item.arguments)
-          const writtenFile = await writeFile(file, content)
+          const { file, content, mode } = JSON.parse(item.arguments)
+          const writtenFile = await writeFile(file, content, mode)
 
           input.push({
             type: "function_call_output",
