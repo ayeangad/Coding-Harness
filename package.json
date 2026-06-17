@@ -1,5 +1,5 @@
 {
-  "name": "pi",
+  "name": "coding-harness",
   "private": true,
   "devDependencies": {
     "@types/bun": "latest"
@@ -8,6 +8,8 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "commander": "^15.0.0"
+    "commander": "^15.0.0",
+    "openai": "^6.42.0",
+    "openmeteo": "^1.2.3"
   }
 }
