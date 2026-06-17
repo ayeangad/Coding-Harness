@@ -67,9 +67,6 @@ export async function agentLoop(prompt: string) {
         }
       }
 
-      console.log("Final input:");
-      console.log(JSON.stringify(input, null, 2));
-
       response = await client.responses.create({
         model: "gpt-4o",
         instructions: "Read the question and answer accordingly, use Tools if required.",
@@ -84,9 +81,7 @@ export async function agentLoop(prompt: string) {
           hasMoreCalls = false
         }
       }
-      console.log(response.output)
     }
-    console.log("Final output:");
     console.log(response.output_text);
     break;
   }
