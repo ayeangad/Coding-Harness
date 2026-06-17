@@ -1,5 +1,5 @@
 import OpenAI from "openai"
-import { tools, getWeather } from "./tools"
+import { tools, getWeather, writeFile, readFile, deleteFile } from "./tools"
 
 const client = new OpenAI()
 
@@ -32,6 +32,39 @@ export async function agentLoop(prompt: string) {
             output: weather
           })
         }
+
+        if (item.name === "writeFile") {
+          const { file, content } = JSON.parse(item.arguments)
+          const writtenFile = await writeFile(file, content)
+
+          input.push({
+            type: "function_call_output",
+            call_id: item.call_id,
+            output: writtenFile
+          })
+        }
+
+        if (item.name === "readFile") {
+          const { file } = JSON.parse(item.arguments)
+          const doneReading = await readFile(file)
+
+          input.push({
+            type: "function_call_output",
+            call_id: item.call_id,
+            output: doneReading
+          })
+        }
+
+        if (item.name === "deleteFile") {
+          const { file, content } = JSON.parse(item.arguments)
+          const deletedFile = await deleteFile(file, content)
+
+          input.push({
+            type: "function_call_output",
+            call_id: item.call_id,
+            output: deletedFile
+          })
+        }
       }
 
       console.log("Final input:");
@@ -43,6 +76,8 @@ export async function agentLoop(prompt: string) {
         tools,
         input,
       });
+
+      input.push(...response.output)
 
       for (const item of response.output) {
         if (item.type !== "function_call") {
