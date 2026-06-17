@@ -3,10 +3,17 @@ import { tools, getWeather, writeFile, readFile, deleteFile } from "./tools"
 
 const client = new OpenAI()
 
+const file = Bun.file("context")
+let initialContext: any[] = []
+
+if (await file.exists()) {
+  const text = await file.text()
+  initialContext = JSON.parse(text)
+}
 export async function agentLoop(prompt: string) {
-  let input: any = [
-    { role: "user", content: prompt }
-  ]
+
+  let input: any = initialContext
+  input.push({ role: "user", content: prompt })
 
   let response = await client.responses.create({
     model: "gpt-4o",
@@ -83,6 +90,8 @@ export async function agentLoop(prompt: string) {
       }
     }
     console.log(response.output_text);
+    const newContext = JSON.stringify(input)
+    Bun.write("context", newContext)
     break;
   }
 }
